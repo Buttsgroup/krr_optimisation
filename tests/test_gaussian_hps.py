@@ -12,14 +12,14 @@ def test_gaussian():
     
     model = FCHLmodel()
     
-    param_ranges = {'cutoff': {'min': 1, 
-                                'max': 5,
+    param_ranges = {'cutoff': {'min': 3, 
+                                'max': 10,
                                 'log': False},
-                    'sigma': {'min': -3, 
-                                'max': 1,
+                    'sigma': {'min': -2, 
+                                'max': 5,
                                 'log': True},
-                    'lamda': {'min': -6, 
-                                'max': -4,
+                    'lamda': {'min': -9, 
+                                'max': -2,
                                 'log': True}}
                                 
     tr_atom = pd.read_pickle('tests/test_data/atoms.pkl')
@@ -27,11 +27,13 @@ def test_gaussian():
     
     rep_func = add_fchl_to_atom_df
     
-    cv_range = 3
+    cv_range = 5
     
-    opt, util = hpsgauss.setup_gaussian(param_ranges, kappa=0.2, xi=0.0)
+    opt, util = hpsgauss.setup_gaussian(param_ranges, kappa=5, xi=0.1)
     
-    for _ in range(5):
+    for _ in range(10):
         score, params, opt = hpsgauss.gaussian_iteration(opt, util, model, tr_atom, tr_pair, rep_func,
                                                 param_ranges, cv_range)                
-                                                
+        print(score, params)
+        
+    #assert False                

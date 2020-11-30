@@ -50,10 +50,10 @@ def gaussian_iteration(opt, util, model, tr_atom, tr_pair, rep_func, param_range
 	params = {}
 	for param in param_ranges.keys():
 		diff = param_ranges[param]['max'] - param_ranges[param]['min']
+		params[param] = (next_point_to_probe[param]*diff) + param_ranges[param]['min']
+		
 		if param_ranges[param]['log']:
-			params[param] = 10**(next_point_to_probe[param]*diff) + param_ranges[param]['max']
-		else:
-			params[param] = (next_point_to_probe[param]*diff) + param_ranges[param]['max']
+			params[param] = 10**params[param] 
 
 	tr_atom = rep_func(tr_atom, copy.copy(params))
 	model.params = copy.copy(params)
@@ -68,7 +68,7 @@ def gaussian_iteration(opt, util, model, tr_atom, tr_pair, rep_func, param_range
 		scores.append(model.evaluate(test_x, test_y))
 
 	score = np.mean(scores)
-	if score > 1000:
+	if score > 1000 or np.isnan(score):
 		score = np.random.rand() + 9999.9
 	opt.register(params=next_point_to_probe, target=-score)
 
